@@ -112,10 +112,10 @@ def get_data_option1(depart, dest, days):
 
 def get_data_option2(depart, dest, days):
 	df = pd.read_csv('Task4a_data.csv')
-	extract = df.loc[(df['From'] == depart) & (df['To'] == dest)]
+	extract = df.loc[(df['From'] == depart) & (df['To'] == dest) & df['Time']]
 	extract_days = extract.iloc[: , -days: ].mean()
-	AM_extract = extract_days.loc[(df['Time'] == 'AM')]
-	PM_extract = extract_days.loc[(df['Time'] == 'PM')]
+	AM_extract = extract_days.loc[(extract_days['Time'] == 'AM')]
+	PM_extract = extract_days.loc[(extract_days['Time'] == 'PM')]
 	print("We have found these flights that match your criteria:")
 	return AM_extract, PM_extract
 
