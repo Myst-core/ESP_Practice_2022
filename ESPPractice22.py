@@ -1,3 +1,4 @@
+from numpy import extract
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -13,6 +14,7 @@ def main_menu():
 		print("")
 		print("########### Please select an option #############")
 		print("### 1. View passenger numbers")
+		print("### 2. Avg customers for AM & PM filghts for 2 selected routes")
 		print("### 'x' to Exit")
 
 		choice = input('Enter your number selection here: ')
@@ -100,12 +102,22 @@ def convert_airport_choice(choice):
 		return conv_choice
 
 
-def get_data(depart, dest, days):
+def get_data_option1(depart, dest, days):
 	df = pd.read_csv("Task4a_data.csv")
 	extract = df.loc[(df['From'] == depart) & (df['To'] == dest)]
 	extract_days = extract.iloc[: , -days: ]
 	print("We have found these flights that match your criteria:")
 	return extract_days
+
+
+def get_data_option2(depart, dest, days):
+	df = pd.read_csv('Task4a_data.csv')
+	extract = df.loc[(df['From'] == depart) & (df['To'] == dest)]
+	extract_days = extract.iloc[: , -days: ].mean()
+	AM_extract = extract_days.loc[df['Time'] == 'AM']
+	PM_extract = extract_days.loc[df['Time'] == 'PM']
+	print("We have found these flights that match your criteria:")
+	return AM_extract, PM_extract
 
 
 def option1():
@@ -133,7 +145,7 @@ def option1():
 	print(f"You have selected departure from: {dep_choice}")
 	print(f"You have selected destination as: {dest_choice}")
 
-	extracted_data = get_data(dep_choice, dest_choice, days) 
+	extracted_data = get_data_option1(dep_choice, dest_choice, days) 
 	if extracted_data.empty:
 		print('There are no flights for the route you selected')
 		return
@@ -152,6 +164,40 @@ def option1():
 	plt.show()
 	
 
+def option2():
+	print('### Route 1 ###')
+	flag = True
+	while flag:
+		depart_airport1 = get_airport('departure')
+		destination_airport1 = get_airport('destination')
+		comparison1 = compare_airports(depart_airport1, destination_airport1)
+		if comparison1:
+			print("")
+			print("")
+			print("############### Data entry error ###################")
+			print('Destination and departure airports must be different')
+			print("")
+			print("")
+			flag = True
+		else:
+			flag = False
+
+	print('### Route 2 ###')
+	flag = True
+	while flag:
+		depart_airport2 = get_airport('departure')
+		destination_airport2 = get_airport('destination')
+		comparison2 = compare_airports(depart_airport2, destination_airport2)
+		if comparison2:
+			print("")
+			print("")
+			print("############### Data entry error ###################")
+			print('Destination and departure airports must be different')
+			print("")
+			print("")
+			flag = True
+		else:
+			flag = False
 
 def main():
 	flag = True
@@ -160,6 +206,9 @@ def main():
 
 		if main_menu_choice == '1':
 			option1()
+
+		elif main_menu_choice == '2':
+			option2()
 
 		elif main_menu_choice == 'x':
 			print("Exiting...")
