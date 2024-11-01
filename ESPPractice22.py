@@ -114,8 +114,8 @@ def get_data_option2(depart, dest, days):
 	df = pd.read_csv('Task4a_data.csv')
 	extract = df.loc[(df['From'] == depart) & (df['To'] == dest)]
 	extract_days = extract.iloc[: , -days: ].mean()
-	AM_extract = extract_days.loc[df['Time'] == 'AM']
-	PM_extract = extract_days.loc[df['Time'] == 'PM']
+	AM_extract = extract_days.loc[(df['Time'] == 'AM')]
+	PM_extract = extract_days.loc[(df['Time'] == 'PM')]
 	print("We have found these flights that match your criteria:")
 	return AM_extract, PM_extract
 
@@ -182,6 +182,12 @@ def option2():
 		else:
 			flag = False
 
+	dep_choice1 = convert_airport_choice(depart_airport1)
+	dest_choice1 = convert_airport_choice(destination_airport1)
+
+	print(f"You have selected departure from: {dep_choice1}")
+	print(f"You have selected destination as: {dest_choice1}")
+
 	print('### Route 2 ###')
 	flag = True
 	while flag:
@@ -198,6 +204,30 @@ def option2():
 			flag = True
 		else:
 			flag = False
+
+	dep_choice2 = convert_airport_choice(depart_airport2)
+	dest_choice2 = convert_airport_choice(destination_airport2)
+
+	print(f"You have selected departure from: {dep_choice2}")
+	print(f"You have selected destination as: {dest_choice2}")
+
+	days = get_number_days()
+
+	AM_extracted1, PM_extracted1 = get_data_option2(dep_choice1, dest_choice1, days)
+	AM_extracted2, PM_extracted2 = get_data_option2(dep_choice2, dest_choice2, days)
+	if AM_extracted1.empty or PM_extracted1.empty or AM_extracted2 or PM_extracted2:
+		print('There are no flights for either one or both routes you selected')
+		return
+
+	fig, (ax1, ax2) = plt.subplots(2)
+	ax1.plot(AM_extracted1)
+	ax1.plot(PM_extracted1)
+
+	ax2.plot(AM_extracted2)
+	ax2.plot(PM_extracted2)
+
+	plt.show()
+	
 
 def main():
 	flag = True
